@@ -13,7 +13,7 @@ Lung cancer remains one of the most critical and common medical challenges world
 * **Data Source:** Synthetic Lung Cancer Dataset (Kaggle).
 * **Tech Stack:** Python (`scikit-learn`, `pandas`, `numpy`), Matplotlib.
 * **Models:** Logistic Regression, Random Forest Classifier.
-* **Metrics & Output:** Accuracy, Recall, F1-Score (prioritizing False Negative minimization), paired with a Power BI risk factor dashboard.
+* **Metrics & Output:** Accuracy, Recall, F1-Score (prioritizing False Negative minimization).
 
 ### Phase 2: Time-to-Event Survival Analysis (Real NCCTG Clinical Data)
 * **Objective:** Model exact mortality trajectories over time while handling right-censored trial observations (patients alive at study end or lost to follow-up).
@@ -50,25 +50,31 @@ Lung cancer remains one of the most critical and common medical challenges world
 ## Key Visualizations
 
 ### 1. Model Performance Benchmark
-![Model Comparison](assets/model_comparison.png)
-*Figure 1: Train vs. Test Concordance Index (C-Index) demonstrating Cox PH superiority (0.62) over Random Survival Forest (0.59).*
+![Model Comparison](assets/model_comparison.png) 
+
+*Train vs. Test Concordance Index (C-Index) demonstrating Cox PH superiority (0.62) over Random Survival Forest (0.59).*
 
 ### 2. Predicted Individual Patient Trajectories
 ![Survival Curves](assets/survival_curves.png)
-*Figure 2: Predicted step-function survival probability curves S(t) comparing high-risk vs. low-risk patient trajectories over time.*
+
+*Predicted step-function survival probability curves S(t) comparing high-risk vs. low-risk patient trajectories over time.*
 
 ### 3. Hazard Ratio Feature Importance
 ![Hazard Ratios](assets/hazard_ratios.png)
-*Figure 3: Log-scale hazard ratio chart highlighting primary mortality drivers (ph.ecog_2+) and protective indicators (ph.karno).*).
+
+*Log-scale hazard ratio chart highlighting primary mortality drivers (ph.ecog_2+) and protective indicators (ph.karno).*).
 
 ---
 
 ## Repository Structure
 ```text
-├── data/
-│   └── lung_cancer.csv
-├── notebooks/
-│   └── 02_lung_cancer_survival_modeling.ipynb
+├── Phase 1 Notebooks/
+│   └── Data Loading, First Look and EDA
+│   └── Data Splits
+│   └──Baseline Modeling and Benchmark
+├── Phase 2 Notebooks/
+│   └── EDA and Censoring Audit
+│   └── Lung Cancer Survival Modeling
 ├── README.md
 └── requirements.txt
 
