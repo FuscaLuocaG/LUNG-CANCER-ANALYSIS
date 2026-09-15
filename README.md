@@ -47,10 +47,19 @@ Lung cancer remains one of the most critical and common medical challenges world
 
 ---
 
-## Visualizations Included in Notebook
-* **Baseline Model Benchmark:** Train vs. Test C-Index comparison showing Cox PH superiority.
-* **Individual Patient Trajectories:** Step-function survival curves ($S(t)$) comparing predicted high-risk vs. low-risk patient outcomes over 1,000+ days.
-* **Log-Scale Feature Importance:** Horizontal hazard ratio chart dividing clinical drivers into risk factors ($\text{HR} > 1.0$) and protective indicators ($\text{HR} < 1.0$).
+## Key Visualizations
+
+### 1. Model Performance Benchmark
+![Model Comparison](assets/model_comparison.png)
+*Figure 1: Train vs. Test Concordance Index (C-Index) demonstrating Cox PH superiority (0.62) over Random Survival Forest (0.59).*
+
+### 2. Predicted Individual Patient Trajectories
+![Survival Curves](assets/survival_curves.png)
+*Figure 2: Predicted step-function survival probability curves S(t) comparing high-risk vs. low-risk patient trajectories over time.*
+
+### 3. Hazard Ratio Feature Importance
+![Hazard Ratios](assets/hazard_ratios.png)
+*Figure 3: Log-scale hazard ratio chart highlighting primary mortality drivers (ph.ecog_2+) and protective indicators (ph.karno).*).
 
 ---
 
