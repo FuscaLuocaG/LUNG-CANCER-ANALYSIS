@@ -1,28 +1,65 @@
 # LUNG-CANCER-ANALYSIS
+> **End-to-End Clinical Risk Pipeline & Time-to-Event Survival Modeling**
 
-- End-to-End Clinical Risk Pipeline & Synthetic Data Fidelity Audit.
+## Overview
+Lung cancer remains one of the most critical and common medical challenges worldwide. This project leverages Machine Learning and Survival Analysis to process complex clinical records, uncover subtle physiological patterns, and predict time-to-event outcomes. By analyzing clinical drivers and estimating individual survival probabilities over time, this pipeline provides actionable insights to support early clinical decision-making.
 
-What about if we can make an estimation of survival of one of the most criticals fields in medicine of nowadays; "Lung Cancer", with the sample of 890,000 patients (Synthetic Data) and the power of the Machine Learning we can use years of records process them and get valuable insights. Thankfully to the history and the math, we can develop a system which checks for patterns that could be lost by human-eyes due to the amount of information, and get important hallmarks and behaviors of one of the most dangerous cancers in human-history, also one of the most common. So like this, we can act quick and save another life.
+---
 
-Project Overview
-This project demonstrates two different analytical approaches to lung cancer patient data. It scales from a traditional machine learning classification task using general synthetic data to an advanced, industry-standard Survival Analysis using real clinical trial data.
+## Project Architecture
 
-Phase 1: Binary Mortality Classification (Synthetic Kaggle Data)
-- *Objective:* Predict whether a patient will survive or not (Binary target: 0 or 1) based on demographic and lifestyle risk factors.
-- *Data Source:* Synthetic Lung Cancer Dataset (Kaggle).
-- *Tech Stack:* Python (scikit-learn), *Power BI* for stakeholder dashboards.
-- *Models used:* Logistic Regression and Random Forest Classifier.
-- *Evaluation Metrics:* Accuracy, Recall, and F1-Score (with a strict focus on minimizing False Negatives).
-- *Core Insight:* This phase delivers a high-level business intelligence dashboard in Power BI to analyze risk factors and baseline predictions..
+### Phase 1: Binary Mortality Classification (Synthetic Kaggle Data)
+* **Objective:** Predict binary survival outcomes ($0$ or $1$) using demographic and lifestyle risk factors.
+* **Data Source:** Synthetic Lung Cancer Dataset (Kaggle).
+* **Tech Stack:** Python (`scikit-learn`, `pandas`, `numpy`), Matplotlib.
+* **Models:** Logistic Regression, Random Forest Classifier.
+* **Metrics & Output:** Accuracy, Recall, F1-Score (prioritizing False Negative minimization), paired with a Power BI risk factor dashboard.
 
-Phase 2: True Time-to-Event Survival Analysis (Real Clinical Data)
-- *Objective:* Model when the event (mortality) is likely to occur over time, successfully handling right-censored data (patients who left the study or survived past the timeline).
-- *Data Source:* *NCCTG Lung Cancer Dataset* (Real clinical trial data from the Mayo Clinic, available natively via the lifelines library).
-- *Tech Stack:* Python (lifelines, scikit-survival), matplotlib.
-- *Models used:* Kaplan-Meier Estimator (for clinical curves) and Cox Proportional Hazards Model.
-- *Evaluation Metrics:* *Concordance Index (C-index)*.
-- *Core Insight:* This phase upgrades the project to a specialized Data Science level, capturing the complex temporal dynamics required in healthcare, pharma, and insurance industries.
+### Phase 2: Time-to-Event Survival Analysis (Real NCCTG Clinical Data)
+* **Objective:** Model exact mortality trajectories over time while handling right-censored trial observations (patients alive at study end or lost to follow-up).
+* **Data Source:** **NCCTG Lung Cancer Dataset** ($N=228$, Mayo Clinic).
+* **Tech Stack:** Python (`scikit-survival`, `lifelines`, `scikit-learn`, `pandas`, `numpy`).
+* **Models Evaluated:** Cox Proportional Hazards (Parametric) vs. Random Survival Forest (Non-Parametric).
 
-By spliting the data set at the very beginning of the project into these 3 blocks we make sure there is not Data-Leakeage in the model or even humans in the modeling phase.
+---
 
+## Key Results & Clinical Insights
+
+| Estimator Model | Train C-Index | Test C-Index | Key Characteristic |
+| :--- | :---: | :---: | :--- |
+| **Cox Proportional Hazards** | **0.6591** | **0.6199** | **Top Performer** (Best generalization on $N=228$) |
+| **Random Survival Forest** | 0.6908 | 0.5922 | Overfit due to small sample node splitting |
+
+### Core Clinical Findings
+* **Primary Risk Factor:** Physician-assessed functional decline (`ph.ecog_2+`) is the single strongest mortality driver (**Hazard Ratio $\approx 12.84$**), increasing death hazard nearly 13-fold compared to active patients.
+* **Protective Metric:** High physician Karnofsky performance scores (`ph.karno`, **$\text{HR} \approx 0.59$**) significantly reduce hazard risk, directly correlating with extended patient survival.
+* **Model Benchmark:** Cox PH outperformed Random Survival Forest on held-out test data, confirming that parametric linear estimators generalize better on smaller clinical cohorts.
+
+---
+
+## Pipeline Engineering & Leakage Firewall
+
+1. **Stratified Split:** Executed an 80/20 train/test split stratified by mortality `status` to lock in identical event-to-censored ratios across both sets.
+2. **Leak-Free Transformations:** Built a Scikit-Learn `ColumnTransformer` fitted strictly on training data:
+   * **Numeric Features:** `KNNImputer(n_neighbors=5)` $\rightarrow$ `StandardScaler()`
+   * **Categorical Features:** `OneHotEncoder(drop='first')`
+3. **Structured Target Construction:** Zipped event booleans and observation times into structured NumPy arrays (`dtype=[('Status', '?'), ('Time', '<f8')]`) to feed low-level survival estimators directly.
+
+---
+
+## Visualizations Included in Notebook
+* **Baseline Model Benchmark:** Train vs. Test C-Index comparison showing Cox PH superiority.
+* **Individual Patient Trajectories:** Step-function survival curves ($S(t)$) comparing predicted high-risk vs. low-risk patient outcomes over 1,000+ days.
+* **Log-Scale Feature Importance:** Horizontal hazard ratio chart dividing clinical drivers into risk factors ($\text{HR} > 1.0$) and protective indicators ($\text{HR} < 1.0$).
+
+---
+
+## Repository Structure
+```text
+├── data/
+│   └── lung_cancer.csv
+├── notebooks/
+│   └── 02_lung_cancer_survival_modeling.ipynb
+├── README.md
+└── requirements.txt
 
